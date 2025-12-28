@@ -1,50 +1,61 @@
 from src.predictor import BodyFatPredictor
 
+
+import os
+import pandas as pd
+from src.preprocessing import preprocess_data
+
+
+
+if not os.path.exists('data/bodyfat_processed.csv'):
+    print("🛠️ Clean data not found. Running preprocessing factory...")
+    raw_data = pd.read_csv('data/bodyfat.csv')
+    cleaned_data = preprocess_data(raw_data)
+    cleaned_data.to_csv('data/bodyfat_processed.csv', index=False)
+else:
+    print("✅ Clean data already exists. Skipping preprocessing.")
+
+
+
+
 def main():
-    print("--- 🏋️ BodyFat Professional Estimator ---")
+    print("\n--- 🏋️ BodyFat Professional Estimator ---")
     
-    # 1. Initialize the Engine
-    # (It automatically finds the models because we fixed the pathing in predictor.py)
+    
     try:
         predictor = BodyFatPredictor()
-        print("✅ System initialized. Model & Scaler loaded.")
+        print("🧠 Engine loaded. Ready for input.")
     except Exception as e:
-        print(f"❌ Critical Error: Could not load models. {e}")
+        print(f"❌ Error: {e}")
         return
 
-    # 2. Display what features the model actually needs
-    # This helps you know what data to provide without guessing!
-    required_features = predictor.features
-    print(f"\n📋 Model expects these measurements: {required_features}")
+    # get User Input Interactively
+    print("\n⌨️  Enter measurements (Metric: kg/cm):")
+    user_data = {}
+    try:
+        for feature in predictor.features:
+            val = input(f"   Enter {feature}: ")
+            user_data[feature] = float(val)
+    except ValueError:
+        print("❌ Please enter numbers only.")
+        return
 
-    # 3. Define the Input Data
-    # NOTE: You only need to provide the features listed above. 
-    # Extra keys (like 'Name') are safely ignored by our predictor logic.
-    user_data = {
-        'Abdomen': 94.0,   # cm
-        'Weight': 80.0,   # lbs (check your dataset if it was lbs or kg!)
-        'Wrist': 18.5,     # cm
-        'Neck': 38.0,      # cm
-        'Height': 70.0     # inches
-    }
-
-    # 4. Run Prediction
+    # 3. Predict
     try:
         result = predictor.predict(user_data)
         print(f"\n👉 Predicted Body Fat: {result}%")
-        
-        # Simple health interpretation (optional 'Pro' touch)
-        if result < 6:
-            print("   (Category: Essential Fat / Athlete)")
-        elif result < 24:
-            print("   (Category: Fitness / Average)")
-        else:
-            print("   (Category: Obese)")
-            
-    except KeyError as e:
-        print(f"❌ Input Error: You forgot a required feature! Missing: {e}")
     except Exception as e:
-        print(f"❌ Prediction Error: {e}")
+        print(f"❌ Prediction failed: {e}")
+
+    if result < 13:
+     print("📈 Status: Athletic")
+    elif result < 20:
+     print("📈 Status: Fitness / Lean")
+    else:
+     print("📈 Status: Average / Above Average")
+
+
+
 
 if __name__ == "__main__":
     main()
