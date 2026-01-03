@@ -2,27 +2,27 @@
 
 I built this project to turn the classic 1996 BodyFat dataset into a practical tool. The original data was messy and used Imperial units (lbs/inches), so I focused heavily on cleaning and standardizing the data for modern metric users.
 
-## 🛠️ Why I built this
+##  Why I built this
 Most body fat calculators online are black boxes. I wanted to build a transparent model that shows exactly which measurements (like Abdomen and Weight) impact the result most.
 
-## 🧠 What’s inside
+##  What’s inside
 * **Cleaned Data:** I wrote a preprocessing script that:
     * Converts Weight to **kg** and Measurements to **cm**.
     * Drops impossible data (like the record with 29 inches of height or 0% body fat).
     * Removes the 'Density' column to prevent "cheating" (data leakage).
 * **Interactive CLI:** You can run `main.py` and type in your own stats (weight and abdomen) to get a prediction immediately.
 
-## 🚀 How to use it
+##  How to use it
 1. Clone this repo: git clone https://github.com/Doomiiniik/bodyfat-ml-project
 2. Run `pip install -r requirements.txt`.
 3. Start the tool: `python main.py` (from the main project directory!).
 
-## 📈 Model Performance
+##  Model Performance
 After testing a few different approaches, I settled on a Linear Regression model. 
 * **Reasoning:** It's lightweight, easy to understand, and in my tests, it slightly outperformed **Lasso** and **Ridge** models in terms of accuracy.
 * **Key Features:** It turns out **Abdomen** size  and **Weight** are the biggest predictors, adding more variables actually increased the MSE (Mean Squared Error)
 
-## 📁 Project Structure
+##  Project Structure
 
 * **`main.py`**: The main entry point. It features an interactive CLI that guides the user through entering their measurements (Metric) and returns an instant prediction.
 
